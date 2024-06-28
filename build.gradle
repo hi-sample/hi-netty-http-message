@@ -1,0 +1,39 @@
+plugins {
+    id 'java'
+    id 'application'
+}
+
+group = 'net.hifor'
+version = '1.0-SNAPSHOT'
+
+repositories {
+    mavenLocal()
+    maven { url "https://maven.aliyun.com/repository/public/" }
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'io.netty:netty-all:4.1.71.Final'
+    testImplementation platform('org.junit:junit-bom:5.9.1')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+}
+
+test {
+    useJUnitPlatform()
+}
+
+application {
+    mainClassName = 'net.hifor.demo.HttpServer'
+}
+
+jar {
+    manifest {
+        attributes(
+                'Main-Class': 'net.hifor.demo.HttpServerApplication',
+                'Class-Path': configurations.runtimeClasspath.collect { it.getName() }.join(' ')
+        )
+    }
+    from {
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+}
